@@ -22,8 +22,8 @@ public interface StatsRepository extends JpaRepository<StatsClient, Long> {
             "AND s.uri IN ?3 GROUP BY s.app, s.uri ORDER BY COUNT (DISTINCT s.ip) DESC")
     List<Stats> getAllUniqueStats(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query("SELECT new ru.practicum.ewm.model.Stats(s.app, s.uri, COUNT (s.ip)) " +
+    @Query("SELECT new ru.practicum.ewm.model.Stats(s.app, s.uri, COUNT (s.uri)) " +
             "FROM StatsClient s WHERE s.timestamp > ?1 AND s.timestamp < ?2 " +
-            "GROUP BY s.app ORDER BY COUNT (s.ip) DESC")
+            "GROUP BY s.app, s.uri ORDER BY COUNT (s.uri) DESC")
     List<Stats> getAllStatsWithoutUris(LocalDateTime start, LocalDateTime end, List<String> uris);
 }
