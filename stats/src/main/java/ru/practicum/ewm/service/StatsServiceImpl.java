@@ -39,9 +39,9 @@ public class StatsServiceImpl implements StatsService {
 
         List<Stats> stats;
 
-        if (uris == null || uris.isEmpty())
-            uris = Collections.emptyList();
-
+        if (uris == null || uris.isEmpty()) {
+            stats = statsRepository.getAllStatsWithoutUris(start, end);
+        }
         if (unique) {
             stats = statsRepository.getAllUniqueStats(start, end, uris);
         } else {
