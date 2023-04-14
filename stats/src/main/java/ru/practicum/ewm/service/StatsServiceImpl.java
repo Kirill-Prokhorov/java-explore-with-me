@@ -39,7 +39,7 @@ public class StatsServiceImpl implements StatsService {
         List<Stats> stats;
 
         if (uris == null || uris.isEmpty()) {
-            stats = statsRepository.getAllStatsWithoutUris(start, end);
+            stats = statsRepository.getAllStatsWithoutUris(start, end, uris);
         } else if (unique) {
             stats = statsRepository.getAllUniqueStats(start, end, uris);
         } else {
