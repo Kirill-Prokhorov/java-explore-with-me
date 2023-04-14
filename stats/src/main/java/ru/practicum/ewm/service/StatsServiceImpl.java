@@ -12,6 +12,7 @@ import ru.practicum.ewm.model.StatsClient;
 import ru.practicum.ewm.repository.StatsRepository;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,7 @@ public class StatsServiceImpl implements StatsService {
         List<Stats> stats;
 
         if (uris == null || uris.isEmpty()) {
+            uris = Collections.emptyList();
             stats = statsRepository.getAllStatsWithoutUris(start, end, uris);
         } else if (unique) {
             stats = statsRepository.getAllUniqueStats(start, end, uris);
