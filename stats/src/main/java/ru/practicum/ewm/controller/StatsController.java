@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.StatsClientDto;
-import ru.practicum.ewm.model.Stats;
+import ru.practicum.ewm.dto.StatsDto;
 import ru.practicum.ewm.service.StatsService;
 
 import static ru.practicum.ewm.util.Constants.*;
@@ -30,10 +30,10 @@ public class StatsController {
     }
 
     @GetMapping("/stats")
-    public List<Stats> get(@RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) LocalDateTime start,
-                           @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) LocalDateTime end,
-                           @RequestParam(required = false) List<String> uris,
-                           @RequestParam(defaultValue = "false") Boolean unique) {
+    public List<StatsDto> get(@RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) LocalDateTime start,
+                              @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) LocalDateTime end,
+                              @RequestParam(required = false) List<String> uris,
+                              @RequestParam(defaultValue = "false") Boolean unique) {
         log.info("Запрос статистики");
         return statsService.getStats(start, end, uris, unique);
     }

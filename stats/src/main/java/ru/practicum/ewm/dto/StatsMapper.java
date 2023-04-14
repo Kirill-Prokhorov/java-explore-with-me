@@ -1,29 +1,13 @@
 package ru.practicum.ewm.dto;
 
-import org.springframework.stereotype.Component;
-import ru.practicum.ewm.model.StatsClient;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+import ru.practicum.ewm.model.Stats;
 
-@Component
-public class StatsMapper {
+@Mapper
+public interface StatsMapper {
 
-    public static StatsClient toClass(StatsClientDto statsClientDto) {
-        return StatsClient.builder()
-                .id(statsClientDto.getId())
-                .app(statsClientDto.getApp())
-                .uri(statsClientDto.getUri())
-                .ip(statsClientDto.getIp())
-                .timestamp(statsClientDto.getTimestamp())
-                .build();
-    }
+    StatsMapper STATS_MAPPER = Mappers.getMapper(StatsMapper.class);
 
-    public static StatsClientDto toDto(StatsClient statsClient) {
-        return StatsClientDto.builder()
-                .id(statsClient.getId())
-                .app(statsClient.getApp())
-                .uri(statsClient.getUri())
-                .ip(statsClient.getIp())
-                .timestamp(statsClient.getTimestamp())
-                .build();
-    }
-
+    StatsDto toDto(Stats stats);
 }

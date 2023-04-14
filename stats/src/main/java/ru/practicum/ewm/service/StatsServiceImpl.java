@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.dto.StatsClientDto;
-import ru.practicum.ewm.dto.StatsMapper;
+import ru.practicum.ewm.dto.StatsClientMapper;
+import ru.practicum.ewm.dto.StatsDto;
 import ru.practicum.ewm.model.Stats;
 import ru.practicum.ewm.model.StatsClient;
 import ru.practicum.ewm.repository.StatsRepository;
@@ -13,6 +14,9 @@ import ru.practicum.ewm.repository.StatsRepository;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static ru.practicum.ewm.dto.StatsMapper.STATS_MAPPER;
 
 @Slf4j
 @Service
@@ -24,22 +28,28 @@ public class StatsServiceImpl implements StatsService {
     @Transactional
     @Override
     public StatsClientDto saveStats(StatsClientDto statsClientDto) {
-        StatsClient statsClient = StatsMapper.toClass(statsClientDto);
+        StatsClient statsClient = StatsClientMapper.toClass(statsClientDto);
         statsClient.setTimestamp(LocalDateTime.now());
         statsRepository.save(statsClient);
-        return StatsMapper.toDto(statsClient);
+        return StatsClientMapper.toDto(statsClient);
     }
 
     @Override
-    public List<Stats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public List<StatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+
+        List<Stats> stats;
         if (uris == null || uris.isEmpty())
             uris = Collections.emptyList();
 
         if (unique) {
-            return statsRepository.getAllUniqueStats(start, end, uris, true);
+            stats = statsRepository.getAllUniqueStats(start, end, uris, true);
         } else {
-            return statsRepository.getAllStats(start, end, uris);
+            stats =  statsRepository.getAllStats(start, end, uris);
         }
+        return stats.stream()
+                .map(STATS_MAPPER::toDto)
+                .collect(Collectors.toList());
+
     }
 
 }
