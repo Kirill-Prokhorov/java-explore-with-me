@@ -11,6 +11,7 @@ import ru.practicum.ewm.model.StatsClient;
 import ru.practicum.ewm.repository.StatsRepository;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -31,6 +32,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<Stats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        if (uris == null || uris.isEmpty())
+            uris = Collections.emptyList();
+
         if (unique) {
             return statsRepository.getAllUniqueStats(start, end, uris, true);
         } else {
