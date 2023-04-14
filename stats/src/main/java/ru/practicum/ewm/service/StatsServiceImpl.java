@@ -12,7 +12,6 @@ import ru.practicum.ewm.model.StatsClient;
 import ru.practicum.ewm.repository.StatsRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
