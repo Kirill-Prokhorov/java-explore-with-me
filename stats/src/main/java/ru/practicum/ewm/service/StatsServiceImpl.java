@@ -42,7 +42,7 @@ public class StatsServiceImpl implements StatsService {
         if (uris == null || uris.isEmpty()) {
             stats = statsRepository.getAllStatsWithoutUris(start, end);
         }
-        if (unique) {
+        else if (unique) {
             stats = statsRepository.getAllUniqueStats(start, end, uris);
         } else {
             stats =  statsRepository.getAllStats(start, end, uris);
