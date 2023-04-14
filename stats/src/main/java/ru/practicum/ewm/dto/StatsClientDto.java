@@ -17,14 +17,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StatsClientDto {
-    Long id;
+    private Long id;
     @NotBlank
-    String app;
+    private String app;
+
+    private String uri;
     @NotBlank
-    String uri;
-    @NotBlank
-    String ip;
+    private String ip;
     @JsonFormat(pattern = DATETIME_FORMAT)
     @NotNull
-    LocalDateTime timestamp;
+    private LocalDateTime timestamp;
 }
