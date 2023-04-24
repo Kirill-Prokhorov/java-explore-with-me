@@ -11,17 +11,16 @@ import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.Sort;
 import ru.practicum.ewm.event.model.State;
+import ru.practicum.ewm.event.model.StateAction;
 import ru.practicum.ewm.event.repository.EventRepository;
-import ru.practicum.ewm.exception.EventNotFoundException;
-import ru.practicum.ewm.exception.NotFoundException;
-import ru.practicum.ewm.exception.UserNotFoundException;
-import ru.practicum.ewm.exception.ValidationException;
+import ru.practicum.ewm.exception.*;
 import ru.practicum.ewm.request.dto.RequestDto;
 import ru.practicum.ewm.request.dto.RequestMapper;
 import ru.practicum.ewm.request.model.Request;
 import ru.practicum.ewm.request.repository.RequestRepository;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
+import ru.practicum.ewm.category.repository.CategoryRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,6 +36,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     @Override
@@ -179,7 +179,56 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public EventDto publishEvent(Long eventId) {
+    public EventDto updateEvent (Long eventId, EventUpdateDto eventDto) {
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Событие не найдено!"));
+
+        if (eventDto.getEventDate() != null && eventDto.getEventDate().isBefore(LocalDateTime.now())) {
+            throw new AlreadyExistsException("Нельзя изменить дату события на прошедшее время!");
+        }
+
+        if (eventDto.getEventDate() != null && eventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            throw new AlreadyExistsException("Дата события не может быть раньше 2 часов от текущего времени!");
+        }
+
+        if (!event.getState().equals(State.PENDING)) {
+            throw new AlreadyExistsException("Событие не удовлетворяет правилам редактирования по статусу");
+        }
+
+        if (eventDto.getCategory() != null)
+            event.setCategory(categoryRepository.findById(eventDto.getCategory())
+                    .orElseThrow(() -> new NotFoundException("Категория не существует!")));
+
+        if (eventDto.getDescription() != null)
+            event.setDescription(eventDto.getDescription());
+        if (eventDto.getAnnotation() != null)
+            event.setAnnotation(eventDto.getAnnotation());
+        if (eventDto.getEventDate() != null)
+            event.setEventDate(eventDto.getEventDate());
+        if (eventDto.getLocation() != null) {
+            event.setLon(eventDto.getLocation().getLon());
+            event.setLat(eventDto.getLocation().getLat());
+        }
+        if (eventDto.getPaid() != null)
+            event.setPaid(eventDto.getPaid());
+        if (eventDto.getParticipantLimit() != null)
+            event.setParticipantLimit(eventDto.getParticipantLimit());
+        if (eventDto.getTitle() != null)
+            event.setTitle(eventDto.getTitle());
+
+        if (eventDto.getStateAction() != null) {
+            if (eventDto.getStateAction().equals(StateAction.PUBLISH_EVENT) && event.getState().equals(State.PENDING)) {
+                event.setPublished(LocalDateTime.now());
+                event.setState(State.PUBLISHED);
+            } else if (eventDto.getStateAction().equals(StateAction.REJECT_EVENT) && !event.getState().equals(State.PUBLISHED)) {
+                event.setState(State.CANCELED);
+            } else
+                throw new AlreadyExistsException("Событие не удовлетворяет правилам редактирования по статусу");
+        }
+        return EventMapper.toDto(eventRepository.save(event));
+    }
+    /*public EventDto updateEvent(Long eventId) {
         log.info("Запрос на публикацию");
         Event event = retrieveEvent(eventId);
         if (LocalDateTime.now().plusHours(1).isAfter(event.getEventDate()) ||
@@ -190,7 +239,7 @@ public class EventServiceImpl implements EventService {
         event.setState(State.PUBLISHED);
         event.setPublished(LocalDateTime.now());
         return EventMapper.toDto(eventRepository.save(event));
-    }
+    }*/
 
     @Transactional
     @Override

@@ -34,7 +34,7 @@ public interface EventService {
     List<EventDto> getAdminEvents(List<Long> users, List<State> states, List<Long> categories,
                                   LocalDateTime neededStart, LocalDateTime neededEnd, Integer index, Integer size);
 
-    EventDto publishEvent(Long eventId);
+    EventDto updateEvent(Long eventId, EventUpdateDto eventDto);
 
     EventDto rejectEvent(Long eventId);
 

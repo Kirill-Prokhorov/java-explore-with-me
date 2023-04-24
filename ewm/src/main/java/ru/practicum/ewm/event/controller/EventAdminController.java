@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.event.dto.EventCreationDto;
 import ru.practicum.ewm.event.dto.EventDto;
+import ru.practicum.ewm.event.dto.EventUpdateDto;
 import ru.practicum.ewm.event.model.State;
 import ru.practicum.ewm.event.service.EventService;
 
@@ -38,22 +38,27 @@ public class EventAdminController {
         return eventService.getAdminEvents(users, states, categories, neededStart, neededEnd, index, size);
     }
 
-    @PutMapping("/{eventId}")
+    /*@PutMapping("/{eventId}")
     public EventDto adminUpdate(@PathVariable Long eventId, @RequestBody EventCreationDto eventDto) {
         log.info("Запрос админа событий: обновление события");
         return eventService.adminUpdate(eventId, eventDto);
-    }
+    }*/
 
-    @PatchMapping("/{eventId}/publish")
+    /*@PatchMapping("/{eventId}/publish")
     public EventDto publishEvent(@PathVariable Long eventId) {
         log.info("Запрос админа событий: публикация события");
         return eventService.publishEvent(eventId);
+    }*/
+    @PatchMapping("/{eventId}")
+    public EventDto updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateDto eventDto) {
+        log.info("Запрос админа событий: обновление события");
+        return eventService.updateEvent(eventId, eventDto);
     }
 
-    @PatchMapping("/{eventId}/reject")
+   /* @PatchMapping("/{eventId}/reject")
     public EventDto rejectEvent(@PathVariable Long eventId) {
         log.info("Запрос админа событий: отмена события");
         return eventService.rejectEvent(eventId);
-    }
+    }*/
 
 }
