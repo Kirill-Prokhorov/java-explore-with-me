@@ -179,7 +179,7 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public EventDto updateEvent (Long eventId, EventUpdateDto eventDto) {
+    public EventDto updateEvent(Long eventId, EventUpdateDto eventDto) {
 
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Событие не найдено!"));
