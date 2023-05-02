@@ -45,7 +45,7 @@ public class ErrorHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleForbiddenException(final DataIntegrityViolationException e) {
-        log.info("404 {}", e.getMessage());
+        log.info("409 {}", e.getMessage());
         return ApiError.builder()
                 .errors(List.of(e.getClass().getName()))
                 .message(e.getLocalizedMessage())

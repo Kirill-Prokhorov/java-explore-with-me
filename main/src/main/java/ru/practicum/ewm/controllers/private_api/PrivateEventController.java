@@ -75,4 +75,10 @@ public class PrivateEventController {
                 userId, eventId, updateRequest.toString());
         return eventService.patchRequests(userId, eventId, updateRequest);
     }
+
+    @GetMapping("/subscriptions")
+    public List<EventFullDto> getSubscriptionEvents(@PathVariable Long userId) {
+        log.info("PrivateAPI EventController, getSubscriptionEvents userId: {}", userId);
+        return eventService.findByFollower(userId);
+    }
 }

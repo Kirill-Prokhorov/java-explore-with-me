@@ -429,4 +429,25 @@ public class EventServiceImpl implements EventService {
 
         eventFullDto.setConfirmedRequests(requests.size());
     }
+
+    @Override
+    public List<EventFullDto> findByFollower(Long followerId) {
+        User user = userRepository.findById(followerId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не существует!"));
+
+        List<Event> events = eventRepository.getEventsBySubscriptionsCustom(
+                followerId,
+                Status.PUBLISHED,
+                LocalDateTime.now()
+        );
+
+        List<EventFullDto> eventFullDtos = events.stream()
+                .map(eventMapper::toDto)
+                .collect(Collectors.toList());
+
+        getConfirmedRequestsForEventFullDtos(eventFullDtos);
+        getViewsForEventFullDtos(null, null, eventFullDtos);
+
+        return eventFullDtos;
+    }
 }
