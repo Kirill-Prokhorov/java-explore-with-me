@@ -23,9 +23,9 @@ public interface EventService {
     EventFullDto patchAdminAPI(Long eventId, UpdateEventAdminRequest eventDto);
 
     List<EventFullDto> getByParamsPublicAPI(String text, List<Long> categories
-            , Boolean paid, LocalDateTime rangeStart
-            , LocalDateTime rangeEnd, Boolean onlyAvailable, Sort sort
-            , Integer from, Integer size, HttpServletRequest request);
+            ,Boolean paid, LocalDateTime rangeStart
+            ,LocalDateTime rangeEnd, Boolean onlyAvailable, Sort sort
+            ,Integer from, Integer size, HttpServletRequest request);
 
     EventFullDto getByIdPublicAPI(Long eventId, HttpServletRequest request);
 
@@ -40,7 +40,7 @@ public interface EventService {
     List<ParticipationRequestDto> findRequestsByIdAndInitiatorId(Long userId, Long eventId);
 
     EventRequestStatusUpdateResult patchRequests(Long userId, Long eventId
-            , EventRequestStatusUpdateRequest updateRequest);
+            ,EventRequestStatusUpdateRequest updateRequest);
 
     List<EventFullDto> findByFollower(Long userId);
 }
