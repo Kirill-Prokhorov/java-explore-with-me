@@ -32,7 +32,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         User publisher = userRepository.findById(publisherId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не существует!"));
 
-        if (subscriptionRepository.existsByFollowerIdAndPublisherId( userId, publisherId)) {
+        if (subscriptionRepository.existsByFollowerIdAndPublisherId(userId, publisherId)) {
             throw new ForbiddenException("Подписка уже существует");
         }
 
