@@ -32,7 +32,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         User publisher = userRepository.findById(publisherId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не существует!"));
 
-        if (subscriptionRepository.findByFollowerIdAndPublisherId(userId, publisherId).isPresent()) {
+        if (subscriptionRepository.existsByFollowerIdAndPublisherId( userId, publisherId)) {
             throw new ForbiddenException("Подписка уже существует");
         }
 
@@ -49,19 +49,26 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public List<SubscriptionDto> findByFollowerId(Long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не существует!"));
-        return subscriptionRepository.findByFollowerId(userId).stream()
-                .map(subscriptionMapper::toDto)
-                .collect(Collectors.toList());
+        List<SubscriptionDto> subscriptionDto;
+        if (userRepository.existsById(userId)) {
+            subscriptionDto = subscriptionRepository.findByFollowerId(userId).stream()
+                    .map(subscriptionMapper::toDto)
+                    .collect(Collectors.toList());
+        } else {
+            throw new NotFoundException("Пользователь не существует!");
+        }
+
+        return subscriptionDto;
     }
 
     @Override
     public void cancelSubscription(Long userId, Long subscriptionId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не существует!"));
-        subscriptionRepository.findById(subscriptionId)
-                .orElseThrow(() -> new NotFoundException("Подписка не существует!"));
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("Пользователь не существует!");
+        }
+        if (!userRepository.existsById(subscriptionId)) {
+            throw new NotFoundException("Подписка не существует!");
+        }
         subscriptionRepository.deleteById(subscriptionId);
     }
 }
